@@ -25,7 +25,7 @@ func resourceUser() *schema.Resource {
 			},
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Computed: true,
 			},
 			"email": &schema.Schema{
 				Type:     schema.TypeString,
