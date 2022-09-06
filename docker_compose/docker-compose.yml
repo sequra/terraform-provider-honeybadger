@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  nginx:
+    image: nginx:alpine
+    ports:
+    - 8080:80
+    volumes:
+      - ./default-nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./users_page1.json:/app/users_page1.json
+      - ./users_page2.json:/app/users_page2.json

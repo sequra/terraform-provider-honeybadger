@@ -1,0 +1,15 @@
+{
+    "results": [
+        {
+            "id": 10,
+            "created_at": "2022-02-09T13:43:45.071096Z",
+            "admin": false,
+            "name": "Test Sequra Page2",
+            "email": "test.sequra.page2@sequra.es"
+        }
+    ],
+    "links": {
+        "self": "https://app.honeybadger.io/v2/teams/1234/team_members",
+        "prev": "/users_page1.json"
+    }
+}
