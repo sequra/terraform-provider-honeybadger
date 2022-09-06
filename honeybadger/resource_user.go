@@ -35,6 +35,10 @@ func resourceUser() *schema.Resource {
 				Type:     schema.TypeBool,
 				Required: true,
 			},
+			"user_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -49,12 +53,12 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 	var diags diag.Diagnostics
 
 	userEmail := d.Get("email").(string)
-	userID, err := c.CreateUser(userEmail)
+	err := c.CreateUser(userEmail)
 	if err != nil {
 		return diag.FromErr(err)
 	}
 
-	d.SetId(strconv.Itoa(userID))
+	d.SetId(userEmail)
 	d.Set("last_updated", time.Now().Format(time.RFC850))
 
 	resourceUserRead(ctx, d, m)
@@ -65,10 +69,18 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	c := m.(*hbc.HoneyBadgerClient)
 
-	userID, err := strconv.Atoi(d.Id())
+	// Warning or errors can be collected in a slice type
+	var diags diag.Diagnostics
 
-	if err != nil {
-		return diag.FromErr(err)
+	userEmail := d.Id()
+	userID := d.Get("user_id").(int)
+	if userID == 0 {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "User not found",
+			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in HoneyBadger.",
+		})
+		return diags
 	}
 
 	if d.HasChange("admin") {
@@ -90,12 +102,18 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	userID, err := strconv.Atoi(d.Id())
-	if err != nil {
-		return diag.FromErr(err)
+	userEmail := d.Id()
+	userID := d.Get("user_id").(int)
+	if userID == 0 {
+		diags = append(diags, diag.Diagnostic{
+			Severity: diag.Error,
+			Summary:  "User not found",
+			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in HoneyBadger.",
+		})
+		return diags
 	}
 
-	err = c.DeleteUser(userID)
+	err := c.DeleteUser(userID)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -111,23 +129,13 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	userId, err := strconv.Atoi(d.Id())
-	if err != nil {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to get usr ID from Terraform State",
-			Detail:   "Unable to get usr ID from Terraform State",
-		})
-
-		return diag.FromErr(err)
-	}
-
-	user, err := c.FindUserByID(userId)
+	userEmail := d.Id()
+	user, err := c.FindUserByEmail(userEmail)
 	if err != nil {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "User not found",
-			Detail:   "User " + d.Id() + " not found in HoneyBadger.",
+			Detail:   "User " + userEmail + " not found in HoneyBadger.",
 		})
 		return diag.FromErr(err)
 	}
@@ -135,6 +143,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	d.Set("name", user.Name)
 	d.Set("email", user.Email)
 	d.Set("admin", user.IsAdmin)
+	d.Set("user_id", user.ID)
 
 	return diags
 }

@@ -2,7 +2,6 @@ package honeybadger
 
 import (
 	"context"
-	"encoding/json"
 	"strconv"
 	"time"
 
@@ -24,8 +23,19 @@ func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 
 	var unstructuredUsers []map[string]interface{}
-	inrec, _ := json.Marshal(users)
-	json.Unmarshal(inrec, &unstructuredUsers)
+
+	for _, v := range users {
+		user := make(map[string]interface{})
+
+		user["user_id"] = v.ID
+		user["name"] = v.Name
+		user["admin"] = v.IsAdmin
+		user["email"] = v.Email
+		user["id"] = v.Email
+		user["created_at"] = v.CreatedAt
+
+		unstructuredUsers = append(unstructuredUsers, user)
+	}
 
 	if err := d.Set("users", unstructuredUsers); err != nil {
 		return diag.FromErr(err)
@@ -46,7 +56,7 @@ func dataSourceUsers() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"id": &schema.Schema{
+						"user_id": &schema.Schema{
 							Type:     schema.TypeInt,
 							Computed: true,
 						},
@@ -63,6 +73,10 @@ func dataSourceUsers() *schema.Resource {
 							Computed: true,
 						},
 						"email": &schema.Schema{
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"id": &schema.Schema{
 							Type:     schema.TypeString,
 							Computed: true,
 						},

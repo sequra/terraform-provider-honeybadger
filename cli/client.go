@@ -47,7 +47,8 @@ func (hbc *HoneyBadgerClient) doRequest(req *http.Request) ([]byte, error) {
 
 	if (res.StatusCode != http.StatusOK) &&
 		(res.StatusCode != http.StatusCreated) &&
-		(res.StatusCode != http.StatusAccepted) {
+		(res.StatusCode != http.StatusAccepted) &&
+		(res.StatusCode != http.StatusNoContent) {
 		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
 

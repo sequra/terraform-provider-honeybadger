@@ -54,7 +54,22 @@ func (hbc *HoneyBadgerClient) FindUserByID(userID int) (HoneyBadgerUser, error) 
 	}
 
 	for _, user := range hbUsers {
-		if user.Id == userID {
+		if user.ID == userID {
+			return user, nil
+		}
+	}
+	return HoneyBadgerUser{}, errors.New("User not found")
+}
+
+// FindUserByEmail - Returns a user by Email
+func (hbc *HoneyBadgerClient) FindUserByEmail(userEmail string) (HoneyBadgerUser, error) {
+	hbUsers, err := hbc.GetUsers()
+	if err != nil {
+		return HoneyBadgerUser{}, err
+	}
+
+	for _, user := range hbUsers {
+		if user.Email == userEmail {
 			return user, nil
 		}
 	}
@@ -62,27 +77,27 @@ func (hbc *HoneyBadgerClient) FindUserByID(userID int) (HoneyBadgerUser, error) 
 }
 
 // CreateUser - Crea a HoneyBadger User
-func (hbc *HoneyBadgerClient) CreateUser(userEmail string) (int, error) {
+func (hbc *HoneyBadgerClient) CreateUser(userEmail string) error {
 	var hbUser HoneyBadgerUser
 	var jsonPayload = []byte(`{"team_invitation":{"email":"` + userEmail + `"}}`)
 
 	url := fmt.Sprintf("%s/v2/teams/%d/team_invitations", hbc.HostURL, hbc.TeamID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	body, err := hbc.doRequest(req)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
 	err = json.Unmarshal(body, &hbUser)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	return hbUser.Id, nil
+	return nil
 }
 
 // UpdateUser - Update HoneyBadger User Information
