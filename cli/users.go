@@ -64,7 +64,7 @@ func (hbc *HoneyBadgerClient) FindUserByID(userID int) (HoneyBadgerUser, error) 
 // CreateUser - Crea a HoneyBadger User
 func (hbc *HoneyBadgerClient) CreateUser(userEmail string) (int, error) {
 	var hbUser HoneyBadgerUser
-	var jsonPayload = []byte(`{"team_invitation":"` + userEmail + `"}`)
+	var jsonPayload = []byte(`{"team_invitation":{"email":"` + userEmail + `"}}`)
 
 	url := fmt.Sprintf("%s/v2/teams/%d/team_invitations", hbc.HostURL, hbc.TeamID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
