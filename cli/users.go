@@ -41,8 +41,9 @@ func (hbc *HoneyBadgerClient) GetUsersPaginated(pagePath string, hbUserList []Ho
 // GetUsers - Returns all registered users in HoneyBadger
 func (hbc *HoneyBadgerClient) GetUsers() ([]HoneyBadgerUser, error) {
 	var hbUsers HoneyBadgerUsers
+	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", hbc.TeamID)
 
-	return hbc.GetUsersPaginated("", hbUsers.Users)
+	return hbc.GetUsersPaginated(urlPath, hbUsers.Users)
 }
 
 // FindUserByID - Returns a user by ID
@@ -65,7 +66,8 @@ func (hbc *HoneyBadgerClient) CreateUser(userEmail string) (int, error) {
 	var hbUser HoneyBadgerUser
 	var jsonPayload = []byte(`{"team_invitation":"` + userEmail + `"}`)
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/v2/teams/ID/team_invitations", "http://localhost:8080"), bytes.NewBuffer(jsonPayload))
+	url := fmt.Sprintf("%s/v2/teams/%d/team_invitations", hbc.HostURL, hbc.TeamID)
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
 	if err != nil {
 		return 0, err
 	}
@@ -87,7 +89,8 @@ func (hbc *HoneyBadgerClient) CreateUser(userEmail string) (int, error) {
 func (hbc *HoneyBadgerClient) UpdateUser(userID int, isAdmin bool) error {
 	var jsonPayload = []byte(`{"team_member":{"admin":` + strconv.FormatBool(isAdmin) + `}}`)
 
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/v2/teams/ID/team_members/ID", "http://localhost:8080"), bytes.NewBuffer(jsonPayload))
+	url := fmt.Sprintf("%s/v2/teams/%d/team_members/%d", hbc.HostURL, hbc.TeamID, userID)
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonPayload))
 	if err != nil {
 		return err
 	}
@@ -102,7 +105,8 @@ func (hbc *HoneyBadgerClient) UpdateUser(userID int, isAdmin bool) error {
 
 // DeleteUser - Delete HoneyBadger User
 func (hbc *HoneyBadgerClient) DeleteUser(userID int) error {
-	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/v2/teams/ID/team_members/ID", "http://localhost:8080"), nil)
+	url := fmt.Sprintf("%s/v2/teams/%d/team_members/%d", hbc.HostURL, hbc.TeamID, userID)
+	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return err
 	}
