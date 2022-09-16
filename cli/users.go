@@ -9,9 +9,9 @@ import (
 	"strconv"
 )
 
-// GetUsersPaginated - Returns all registered users in HoneyBadger using pagination
-func (hbc *HoneyBadgerClient) GetUsersPaginated(pagePath string, hbUserList []HoneyBadgerUser) ([]HoneyBadgerUser, error) {
-	var hbUsers HoneyBadgerUsers
+// GetUsersPaginated - Returns all registered users in Honeybadger using pagination
+func (hbc *HoneybadgerClient) GetUsersPaginated(pagePath string, hbUserList []HoneybadgerUser) ([]HoneybadgerUser, error) {
+	var hbUsers HoneybadgerUsers
 	urlPath := fmt.Sprintf("%s/%s", hbc.HostURL, pagePath)
 
 	req, err := http.NewRequest("GET", urlPath, nil)
@@ -38,19 +38,19 @@ func (hbc *HoneyBadgerClient) GetUsersPaginated(pagePath string, hbUserList []Ho
 	return hbUserList, nil
 }
 
-// GetUsers - Returns all registered users in HoneyBadger
-func (hbc *HoneyBadgerClient) GetUsers() ([]HoneyBadgerUser, error) {
-	var hbUsers HoneyBadgerUsers
+// GetUsers - Returns all registered users in Honeybadger
+func (hbc *HoneybadgerClient) GetUsers() ([]HoneybadgerUser, error) {
+	var hbUsers HoneybadgerUsers
 	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", hbc.TeamID)
 
 	return hbc.GetUsersPaginated(urlPath, hbUsers.Users)
 }
 
 // FindUserByID - Returns a user by ID
-func (hbc *HoneyBadgerClient) FindUserByID(userID int) (HoneyBadgerUser, error) {
+func (hbc *HoneybadgerClient) FindUserByID(userID int) (HoneybadgerUser, error) {
 	hbUsers, err := hbc.GetUsers()
 	if err != nil {
-		return HoneyBadgerUser{}, err
+		return HoneybadgerUser{}, err
 	}
 
 	for _, user := range hbUsers {
@@ -58,14 +58,14 @@ func (hbc *HoneyBadgerClient) FindUserByID(userID int) (HoneyBadgerUser, error) 
 			return user, nil
 		}
 	}
-	return HoneyBadgerUser{}, errors.New("User not found")
+	return HoneybadgerUser{}, errors.New("User not found")
 }
 
 // FindUserByEmail - Returns a user by Email
-func (hbc *HoneyBadgerClient) FindUserByEmail(userEmail string) (HoneyBadgerUser, error) {
+func (hbc *HoneybadgerClient) FindUserByEmail(userEmail string) (HoneybadgerUser, error) {
 	hbUsers, err := hbc.GetUsers()
 	if err != nil {
-		return HoneyBadgerUser{}, err
+		return HoneybadgerUser{}, err
 	}
 
 	for _, user := range hbUsers {
@@ -73,12 +73,12 @@ func (hbc *HoneyBadgerClient) FindUserByEmail(userEmail string) (HoneyBadgerUser
 			return user, nil
 		}
 	}
-	return HoneyBadgerUser{}, errors.New("User not found")
+	return HoneybadgerUser{}, errors.New("User not found")
 }
 
-// CreateUser - Crea a HoneyBadger User
-func (hbc *HoneyBadgerClient) CreateUser(userEmail string) error {
-	var hbUser HoneyBadgerUser
+// CreateUser - Crea a Honeybadger User
+func (hbc *HoneybadgerClient) CreateUser(userEmail string) error {
+	var hbUser HoneybadgerUser
 	var jsonPayload = []byte(`{"team_invitation":{"email":"` + userEmail + `"}}`)
 
 	url := fmt.Sprintf("%s/v2/teams/%d/team_invitations", hbc.HostURL, hbc.TeamID)
@@ -100,8 +100,8 @@ func (hbc *HoneyBadgerClient) CreateUser(userEmail string) error {
 	return nil
 }
 
-// UpdateUser - Update HoneyBadger User Information
-func (hbc *HoneyBadgerClient) UpdateUser(userID int, isAdmin bool) error {
+// UpdateUser - Update Honeybadger User Information
+func (hbc *HoneybadgerClient) UpdateUser(userID int, isAdmin bool) error {
 	var jsonPayload = []byte(`{"team_member":{"admin":` + strconv.FormatBool(isAdmin) + `}}`)
 
 	url := fmt.Sprintf("%s/v2/teams/%d/team_members/%d", hbc.HostURL, hbc.TeamID, userID)
@@ -118,8 +118,8 @@ func (hbc *HoneyBadgerClient) UpdateUser(userID int, isAdmin bool) error {
 	return nil
 }
 
-// DeleteUser - Delete HoneyBadger User
-func (hbc *HoneyBadgerClient) DeleteUser(userID int) error {
+// DeleteUser - Delete Honeybadger User
+func (hbc *HoneybadgerClient) DeleteUser(userID int) error {
 	url := fmt.Sprintf("%s/v2/teams/%d/team_members/%d", hbc.HostURL, hbc.TeamID, userID)
 	req, err := http.NewRequest("DELETE", url, nil)
 	if err != nil {

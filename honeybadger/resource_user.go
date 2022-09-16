@@ -47,7 +47,7 @@ func resourceUser() *schema.Resource {
 }
 
 func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*hbc.HoneyBadgerClient)
+	c := m.(*hbc.HoneybadgerClient)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
@@ -67,7 +67,7 @@ func resourceUserCreate(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*hbc.HoneyBadgerClient)
+	c := m.(*hbc.HoneybadgerClient)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
@@ -78,7 +78,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "User not found",
-			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in HoneyBadger.",
+			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in Honeybadger.",
 		})
 		return diags
 	}
@@ -97,7 +97,7 @@ func resourceUserUpdate(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*hbc.HoneyBadgerClient)
+	c := m.(*hbc.HoneybadgerClient)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
@@ -108,7 +108,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "User not found",
-			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in HoneyBadger.",
+			Detail:   "User " + userEmail + " with ID " + strconv.Itoa(userID) + " not found in Honeybadger.",
 		})
 		return diags
 	}
@@ -124,7 +124,7 @@ func resourceUserDelete(ctx context.Context, d *schema.ResourceData, m interface
 }
 
 func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*hbc.HoneyBadgerClient)
+	c := m.(*hbc.HoneybadgerClient)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
@@ -135,7 +135,7 @@ func resourceUserRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "User not found",
-			Detail:   "User " + userEmail + " not found in HoneyBadger.",
+			Detail:   "User " + userEmail + " not found in Honeybadger.",
 		})
 		return diag.FromErr(err)
 	}

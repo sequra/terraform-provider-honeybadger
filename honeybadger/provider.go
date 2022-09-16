@@ -54,7 +54,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if authToken == "" {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create HoneyBadger client",
+			Summary:  "Unable to create Honeybadger client",
 			Detail:   "Honeybadger Client cannot be created because 'api_key' provider parameter is not defined",
 		})
 	}
@@ -62,7 +62,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 	if teamID == 0 {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
-			Summary:  "Unable to create HoneyBadger client",
+			Summary:  "Unable to create Honeybadger client",
 			Detail:   "Honeybadger Client cannot be created because 'team_id' provider parameter is not defined",
 		})
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 func dataSourceUsersRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	c := m.(*hbc.HoneyBadgerClient)
+	c := m.(*hbc.HoneybadgerClient)
 
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics

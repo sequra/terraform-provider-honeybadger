@@ -11,25 +11,25 @@ import (
 	hbc "terraform-provider-honeybadger/cli"
 )
 
-func TestAccHoneyBadgerUserBasic(t *testing.T) {
+func TestAccHoneybadgerUserBasic(t *testing.T) {
 	email := "test.sequra@sequra.es"
 	isAdmin := true
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckHoneyBadgerUserDestroy,
+		CheckDestroy: testAccCheckHoneybadgerUserDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckHoneyBadgerUserConfigBasic(email, isAdmin),
+				Config: testAccCheckHoneybadgerUserConfigBasic(email, isAdmin),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckHoneyBadgerUserExists("honeybadger_user.new"),
+					testAccCheckHoneybadgerUserExists("honeybadger_user.new"),
 				),
 			},
 		},
 	})
 }
-func testAccCheckHoneyBadgerUserConfigBasic(email string, isAdmin bool) string {
+func testAccCheckHoneybadgerUserConfigBasic(email string, isAdmin bool) string {
 	return fmt.Sprintf(`
 	resource "honeybadger_user" "new" {
 		email = %s
@@ -38,8 +38,8 @@ func testAccCheckHoneyBadgerUserConfigBasic(email string, isAdmin bool) string {
 	`, email, isAdmin)
 }
 
-func testAccCheckHoneyBadgerUserDestroy(s *terraform.State) error {
-	c := testAccProvider.Meta().(*hbc.HoneyBadgerClient)
+func testAccCheckHoneybadgerUserDestroy(s *terraform.State) error {
+	c := testAccProvider.Meta().(*hbc.HoneybadgerClient)
 
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type != "honeybadger_user" {
@@ -61,7 +61,7 @@ func testAccCheckHoneyBadgerUserDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccCheckHoneyBadgerUserExists(n string) resource.TestCheckFunc {
+func testAccCheckHoneybadgerUserExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 

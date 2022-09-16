@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-const HoneyBadgerURL string = "https://app.honeybadger.io"
+const HoneybadgerURL string = "https://app.honeybadger.io"
 
-type HoneyBadgerClient struct {
+type HoneybadgerClient struct {
 	HostURL    string
 	HTTPClient *http.Client
 	ApiToken   string
 	TeamID     int
 }
 
-func NewClient(host *string, apiToken *string, teamID *int) *HoneyBadgerClient {
-	hbc := &HoneyBadgerClient{
+func NewClient(host *string, apiToken *string, teamID *int) *HoneybadgerClient {
+	hbc := &HoneybadgerClient{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
-		HostURL:    HoneyBadgerURL,
+		HostURL:    HoneybadgerURL,
 		ApiToken:   *apiToken,
 		TeamID:     *teamID,
 	}
@@ -30,7 +30,7 @@ func NewClient(host *string, apiToken *string, teamID *int) *HoneyBadgerClient {
 	return hbc
 }
 
-func (hbc *HoneyBadgerClient) doRequest(req *http.Request) ([]byte, error) {
+func (hbc *HoneybadgerClient) doRequest(req *http.Request) ([]byte, error) {
 	req.SetBasicAuth(hbc.ApiToken, "")
 	req.Header.Set("Content-Type", "application/json")
 
