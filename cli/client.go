@@ -30,7 +30,7 @@ func NewClient(host *string, apiToken *string, teamID *int) *HoneybadgerClient {
 	return hbc
 }
 
-func (hbc *HoneybadgerClient) doRequest(req *http.Request) ([]byte, error) {
+func (hbc *HoneybadgerClient) DoRequest(req *http.Request) ([]byte, error) {
 	req.SetBasicAuth(hbc.ApiToken, "")
 	req.Header.Set("Content-Type", "application/json")
 
