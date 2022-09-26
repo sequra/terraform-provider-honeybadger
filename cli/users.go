@@ -19,7 +19,7 @@ func (hbc *HoneybadgerClient) GetUsersPaginated(pagePath string, hbUserList []Ho
 		return hbUsers.Users, err
 	}
 
-	body, err := hbc.doRequest(req)
+	body, err := hbc.DoRequest(req)
 	if err != nil {
 		return hbUsers.Users, err
 	}
@@ -87,7 +87,7 @@ func (hbc *HoneybadgerClient) CreateUser(userEmail string) error {
 		return err
 	}
 
-	body, err := hbc.doRequest(req)
+	body, err := hbc.DoRequest(req)
 	if err != nil {
 		return err
 	}
@@ -110,7 +110,7 @@ func (hbc *HoneybadgerClient) UpdateUser(userID int, isAdmin bool) error {
 		return err
 	}
 
-	_, err = hbc.doRequest(req)
+	_, err = hbc.DoRequest(req)
 	if err != nil {
 		return err
 	}
@@ -126,7 +126,7 @@ func (hbc *HoneybadgerClient) DeleteUser(userID int) error {
 		return err
 	}
 
-	_, err = hbc.doRequest(req)
+	_, err = hbc.DoRequest(req)
 	if err != nil {
 		return err
 	}
