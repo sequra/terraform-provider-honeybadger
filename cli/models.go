@@ -1,11 +1,11 @@
 package cli
 
-type HoneyBadgerUsers struct {
-	Users []HoneyBadgerUser `json:"results"`
-	Links HoneyBadgerLink   `json:"links"`
+type HoneybadgerUsers struct {
+	Users []HoneybadgerUser `json:"results"`
+	Links HoneybadgerLink   `json:"links"`
 }
 
-type HoneyBadgerUser struct {
+type HoneybadgerUser struct {
 	ID        int    `json:"id"`
 	Name      string `json:"name"`
 	Email     string `json:"email"`
@@ -13,7 +13,7 @@ type HoneyBadgerUser struct {
 	IsAdmin   bool   `json:"admin"`
 }
 
-type HoneyBadgerLink struct {
+type HoneybadgerLink struct {
 	Self         string `json:"self"`
 	PreviousPage string `json:"prev"`
 	NextPage     string `json:"next"`
