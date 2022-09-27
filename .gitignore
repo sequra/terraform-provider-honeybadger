@@ -63,3 +63,7 @@ override.tf.json
 terraform.rc
 terraform
 .terraform.lock.hcl
+
+# Ignore other directories or files
+examples/internal/**
+internal_run.go

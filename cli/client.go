@@ -13,15 +13,13 @@ type HoneybadgerClient struct {
 	HostURL    string
 	HTTPClient *http.Client
 	ApiToken   string
-	TeamID     int
 }
 
-func NewClient(host *string, apiToken *string, teamID *int) *HoneybadgerClient {
+func NewClient(host *string, apiToken *string) *HoneybadgerClient {
 	hbc := &HoneybadgerClient{
 		HTTPClient: &http.Client{Timeout: 10 * time.Second},
 		HostURL:    HoneybadgerURL,
 		ApiToken:   *apiToken,
-		TeamID:     *teamID,
 	}
 
 	if *host != "" {
