@@ -2,10 +2,10 @@
 layout: ""
 page_title: "Provider: Honeybadger"
 description: |-
-  The Honeybadger provider allows you to interact with the Datadog API.
+  The Honeybadger provider allows you to interact with the Honeybadger API.
 ---
 
-# Datadog Provider
+# Honeybadger Provider
 
 The Honeybadger provider is used to interact with [Honeybadger.io](https://honeybadger.io) resources, and is maintained by a small team within [Sequra](https://www.sequra.es)
 
