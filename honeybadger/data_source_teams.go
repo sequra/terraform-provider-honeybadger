@@ -26,17 +26,19 @@ func dataSourceTeamsRead(ctx context.Context, d *schema.ResourceData, m interfac
 
 	for _, team := range teams {
 		var unstructuredUsers []map[string]interface{}
-		unstructuredTeam := make(map[string]interface{})
-
-		unstructuredTeam["name"] = team.Name
-		unstructuredTeam["id"] = team.ID
-		unstructuredTeam["created_at"] = team.CreatedAt
+		unstructuredTeam := map[string]interface{}{
+			"name": team.Name,
+			"id": team.ID,
+			"created_at": team.CreatedAt,
+		}
 		for _, user := range team.Users {
-			unstructuredUser := make(map[string]interface{})
-			unstructuredUser["id"] = user.ID
-			unstructuredUser["name"] = user.Name
-			unstructuredUser["email"] = user.Email
-			unstructuredUser["admin"] = user.IsAdmin
+
+			unstructuredUser := map[string]interface{}{
+				"id": user.ID,
+				"name": user.Name,
+				"email": user.Email,
+				"admin": user.IsAdmin,
+			}
 
 			unstructuredUsers = append(unstructuredUsers, unstructuredUser)
 		}
