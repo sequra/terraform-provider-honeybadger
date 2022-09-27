@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     honeybadger = {
-      version = "~> 0.1.0"
+      version = "~> 1.0.0"
       source  = "sequra.com/providers/honeybadger"
     }
   }

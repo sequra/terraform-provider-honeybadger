@@ -15,8 +15,8 @@ The Honeybadger provider is used to interact with [Honeybadger.io](https://honey
 terraform {
   required_providers {
     honeybadger = {
-      version = "~> 0.1.0"
-      source  = "sequra.com/providers/honeybadger"
+      version = "~> 1.0.0"
+      source = "sequra/honeybadger"
     }
   }
 }
