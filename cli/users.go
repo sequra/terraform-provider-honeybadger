@@ -46,36 +46,6 @@ func (hbc *HoneybadgerClient) GetUsers(teamID int) ([]HoneybadgerUser, error) {
 	return hbc.GetUsersPaginated(urlPath, hbUsers.Users)
 }
 
-// FindUserByID - Returns a user by ID
-func (hbc *HoneybadgerClient) FindUserByID(userID int, teamID int) (HoneybadgerUser, error) {
-	hbUsers, err := hbc.GetUsers(teamID)
-	if err != nil {
-		return HoneybadgerUser{}, err
-	}
-
-	for _, user := range hbUsers {
-		if user.ID == userID {
-			return user, nil
-		}
-	}
-	return HoneybadgerUser{}, errors.New("User not found")
-}
-
-// FindUserByEmail - Returns a user by Email
-func (hbc *HoneybadgerClient) FindUserByEmail(userEmail string, teamID int) (HoneybadgerUser, error) {
-	hbUsers, err := hbc.GetUsers(teamID)
-	if err != nil {
-		return HoneybadgerUser{}, err
-	}
-
-	for _, user := range hbUsers {
-		if user.Email == userEmail {
-			return user, nil
-		}
-	}
-	return HoneybadgerUser{}, errors.New("User not found")
-}
-
 // CreateUser - Create Honeybadger User
 func (hbc *HoneybadgerClient) CreateUser(userEmail string, isAdmin bool, teamID int) error {
 	var hbUser HoneybadgerUser
@@ -142,14 +112,30 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 	}
 
 	for _, team := range teams {
-		user, err := hbc.FindUserByEmail(userEmail, team.ID)
-		if err != nil {
-			continue
+		for _, user := range team.Users {
+			if user.Email != userEmail {
+				continue
+			}
+			user.TeamID = team.ID
+			userTeams = append(userTeams, user)
 		}
-
-		user.TeamID = team.ID
-		userTeams = append(userTeams, user)
 	}
 
 	return userTeams, nil
+}
+
+// GetUserFromTeams - Get User information from Teams
+func (hbc *HoneybadgerClient) GetUserForTeam(userEmail string, teamID int) (HoneybadgerUser, error) {
+	userTeams, err := hbc.GetUserFromTeams(userEmail)
+	if err != nil {
+		return HoneybadgerUser{}, err
+	}
+
+	for _, userTeam := range userTeams {
+		if userTeam.TeamID == teamID {
+			return userTeam, nil
+		}
+	}
+
+	return HoneybadgerUser{}, errors.New("User " + userEmail + "not found in team " + strconv.Itoa(teamID))
 }

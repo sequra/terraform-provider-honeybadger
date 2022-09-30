@@ -196,7 +196,7 @@ func updateUserTeam(userEmail string, d *schema.ResourceData, m interface{}) err
 		team := operation.(map[string]interface{})
 		teamID := team["id"].(int)
 		isAdmin := team["is_admin"].(bool)
-		user, _ := c.FindUserByEmail(userEmail, teamID) //userID is 0 because new state could not preserve the ID
+		user, _ := c.GetUserForTeam(userEmail, teamID) //userID is 0 because new state could not preserve the ID
 		log.Printf("User %s with ID %d it will be updated in team %d with admin value %t", userEmail, user.ID, teamID, isAdmin)
 		err := c.UpdateUser(user.ID, isAdmin, teamID)
 		if err != nil {
