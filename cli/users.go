@@ -77,9 +77,9 @@ func (hbc *HoneybadgerClient) FindUserByEmail(userEmail string, teamID int) (Hon
 }
 
 // CreateUser - Create Honeybadger User
-func (hbc *HoneybadgerClient) CreateUser(userEmail string, teamID int) error {
+func (hbc *HoneybadgerClient) CreateUser(userEmail string, isAdmin bool, teamID int) error {
 	var hbUser HoneybadgerUser
-	var jsonPayload = []byte(`{"team_invitation":{"email":"` + userEmail + `"}}`)
+	var jsonPayload = []byte(`{"team_invitation":{"email":"` + userEmail + `", "admin":"` + strconv.FormatBool(isAdmin) + `"}}`)
 
 	url := fmt.Sprintf("%s/v2/teams/%d/team_invitations", hbc.HostURL, teamID)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
@@ -132,4 +132,24 @@ func (hbc *HoneybadgerClient) DeleteUser(userID int, teamID int) error {
 	}
 
 	return nil
+}
+
+// GetUserFromTeams - Get User information from Teams
+func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []HoneybadgerUser, err error) {
+	teams, err := hbc.GetTeams()
+	if err != nil {
+		return userTeams, err
+	}
+
+	for _, team := range teams {
+		user, err := hbc.FindUserByEmail(userEmail, team.ID)
+		if err != nil {
+			continue
+		}
+
+		user.TeamID = team.ID
+		userTeams = append(userTeams, user)
+	}
+
+	return userTeams, nil
 }

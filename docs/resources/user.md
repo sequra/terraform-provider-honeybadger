@@ -17,9 +17,8 @@ description: |-
 
 ### Required
 
-- `admin` (Boolean)
 - `email` (String)
-- `team_id` (List of Number)
+- `team` (Block Set, Min: 1) (see [below for nested schema](#nestedblock--team))
 
 ### Optional
 
@@ -28,7 +27,17 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `name` (String)
+
+<a id="nestedblock--team"></a>
+### Nested Schema for `team`
+
+Optional:
+
+- `is_admin` (Boolean)
+
+Read-Only:
+
+- `id` (Number) The ID of this resource.
 - `user_id` (Number)
 
 

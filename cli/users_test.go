@@ -248,7 +248,7 @@ func TestCreateUser(t *testing.T) {
 		Reply(http.StatusCreated).
 		JSON(expectedBody)
 
-	errResponse := honeybadgerCli.CreateUser("new.user@sequra.es", honeybadgerTeamID)
+	errResponse := honeybadgerCli.CreateUser("new.user@sequra.es", false, honeybadgerTeamID)
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }

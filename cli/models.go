@@ -10,6 +10,7 @@ type HoneybadgerUser struct {
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	CreatedAt string `json:"created_at"`
+	TeamID    int    `json:"team_id"`
 	IsAdmin   bool   `json:"admin"`
 }
 

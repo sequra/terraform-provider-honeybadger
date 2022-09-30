@@ -26,15 +26,19 @@ resource "honeybadger_team" "new_team" { # terraform import honeybadger_team.new
 # Create a new user
 resource "honeybadger_user" "new" {
   email = "test.sequra@sequra.es"
-  admin = false
-  team_id = [honeybadger_team.new_team.id]
+  team {
+    id = honeybadger_team.new_team.id
+    is_admin = false
+  }
 }
 
 
 # Update user - before you need to import using: terraform import honeybadger_user.TestSequra2 test.sequra.page2@sequra.es
 resource "honeybadger_user" "TestSequra2" {
   email = "test.sequra.page2@sequra.es"
-  admin = true
-  team_id = [honeybadger_team.new_team.id]
+  team {
+    id = honeybadger_team.new_team.id
+    is_admin = false
+  }
 }
 
