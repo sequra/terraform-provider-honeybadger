@@ -208,7 +208,6 @@ func updateUserTeam(userEmail string, d *schema.ResourceData, m interface{}) err
 }
 
 func calculateRealDifference(oldState *schema.Set, newState *schema.Set) *schema.Set {
-
 	updateOperation := schema.NewSet(oldState.F, []interface{}{})
 
 	for _, os := range oldState.List() {
@@ -217,7 +216,7 @@ func calculateRealDifference(oldState *schema.Set, newState *schema.Set) *schema
 		for _, ns := range newState.List() {
 			teamAdd := ns.(map[string]interface{})
 			teamIDAdd := teamAdd["id"].(int)
-			if teamIDAdd == teamIDRem { // Is an upate operation
+			if teamIDAdd == teamIDRem { // It is s an upate operation
 				updateOperation.Add(ns)
 				oldState.Remove(os)
 				newState.Remove(ns)
