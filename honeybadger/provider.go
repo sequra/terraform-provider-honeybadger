@@ -22,17 +22,13 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("HONEYBADGER_API_KEY", nil),
 			},
-			"team_id": &schema.Schema{
-				Type:        schema.TypeInt,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("HONEYBADGER_TEAM_ID", nil),
-			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"honeybadger_users": dataSourceUsers(),
+			"honeybadger_teams": dataSourceTeams(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"honeybadger_user": resourceUser(),
+			"honeybadger_team": resourceTeam(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}
@@ -41,12 +37,11 @@ func Provider() *schema.Provider {
 func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
 	host := d.Get("host").(string)
 	authToken := d.Get("api_key").(string)
-	teamID := d.Get("team_id").(int)
 	// Warning or errors can be collected in a slice type
 	var diags diag.Diagnostics
 
-	if (authToken != "") && (teamID != 0) {
-		c := cli.NewClient(&host, &authToken, &teamID)
+	if authToken != "" {
+		c := cli.NewClient(&host, &authToken)
 
 		return c, diags
 	}
@@ -56,14 +51,6 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 			Severity: diag.Error,
 			Summary:  "Unable to create Honeybadger client",
 			Detail:   "Honeybadger Client cannot be created because 'api_key' provider parameter is not defined",
-		})
-	}
-
-	if teamID == 0 {
-		diags = append(diags, diag.Diagnostic{
-			Severity: diag.Error,
-			Summary:  "Unable to create Honeybadger client",
-			Detail:   "Honeybadger Client cannot be created because 'team_id' provider parameter is not defined",
 		})
 	}
 

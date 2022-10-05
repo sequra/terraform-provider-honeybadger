@@ -3,7 +3,7 @@ HOSTNAME=sequra.com
 NAMESPACE=providers
 NAME=honeybadger
 BINARY=terraform-provider-${NAME}
-VERSION=0.1
+VERSION=1.0
 OS_ARCH=darwin_arm64
 
 default: install
@@ -28,6 +28,9 @@ release:
 install: build
 	mkdir -p ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
 	mv ${BINARY} ~/.terraform.d/plugins/${HOSTNAME}/${NAMESPACE}/${NAME}/${VERSION}/${OS_ARCH}
+
+generate-docs:
+	tfplugindocs
 
 test:
 	go test $(TEST) || exit 1

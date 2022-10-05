@@ -34,7 +34,4 @@ func testAccPreCheck(t *testing.T) {
 	if err := os.Getenv("HONEYBADGER_API_KEY"); err == "" {
 		t.Fatal("HONEYBADGER_API_KEY must be set for acceptance tests")
 	}
-	if err := os.Getenv("HONEYBADGER_TEAM_ID"); err == "" {
-		t.Fatal("HONEYBADGER_TEAM_ID must be set for acceptance tests")
-	}
 }

@@ -13,7 +13,7 @@ import (
 var honeybadgerAPIHost = "http://localhost"
 var honeybadgerAPIKey = "213123"
 var honeybadgerTeamID = 23434
-var honeybadgerCli = NewClient(&honeybadgerAPIHost, &honeybadgerAPIKey, &honeybadgerTeamID)
+var honeybadgerCli = NewClient(&honeybadgerAPIHost, &honeybadgerAPIKey)
 
 func TestGetUsersIsNotProperlyAnswering(t *testing.T) {
 	defer gock.Off()
@@ -29,7 +29,7 @@ func TestGetUsersIsNotProperlyAnswering(t *testing.T) {
 		Reply(http.StatusInternalServerError).
 		JSON(expectedBody)
 
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers()
+	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers(honeybadgerTeamID)
 
 	assert.Equal(expectedHoneybadgerResponse.Users, actualHoneybadgerResponse, "Actual response is different from expected response")
 	assert.Equal(errResponse, expectedErrorResponse, "Reponse error must be 500")
@@ -56,7 +56,7 @@ func TestGetUsersWithoutPagination(t *testing.T) {
 		Reply(http.StatusOK).
 		JSON(expectedBody)
 
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers()
+	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers(honeybadgerTeamID)
 
 	assert.Equal(expectedHoneybadgerResponse.Users, actualHoneybadgerResponse, "Actual response is different from expected response")
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
@@ -121,120 +121,10 @@ func TestGetUsersWithPagination(t *testing.T) {
 		hbExpectedUserList = append(hbExpectedUserList, expectedResponse.hbUsers.Users...)
 	}
 
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers()
+	actualHoneybadgerResponse, errResponse := honeybadgerCli.GetUsers(honeybadgerTeamID)
 
 	assert.Equal(hbExpectedUserList, actualHoneybadgerResponse, "Actual response is different from expected response")
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
-}
-
-func TestFindUserByID(t *testing.T) {
-	defer gock.Off()
-	assert := assert.New(t)
-	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", honeybadgerTeamID)
-
-	expectedHoneybadgerResponse := HoneybadgerUsers{
-		Users: []HoneybadgerUser{
-			{
-				ID:      10,
-				Name:    "Test Sequra Page2",
-				Email:   "test.sequra.page2@sequra.es",
-				IsAdmin: false,
-			},
-		},
-	}
-	expectedBody, _ := json.Marshal(expectedHoneybadgerResponse)
-	gock.New(honeybadgerAPIHost).
-		Get(urlPath).
-		Reply(http.StatusOK).
-		JSON(expectedBody)
-
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.FindUserByID(10)
-
-	assert.Equal(expectedHoneybadgerResponse.Users[0], actualHoneybadgerResponse, "Actual response is different from expected response")
-	assert.Equal(errResponse, nil, "Reponse error must be nil")
-}
-
-func TestFindUserByIdNotFound(t *testing.T) {
-	defer gock.Off()
-	assert := assert.New(t)
-	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", honeybadgerTeamID)
-
-	expectedHoneybadgerResponse := HoneybadgerUsers{
-		Users: []HoneybadgerUser{
-			{
-				ID:      10,
-				Name:    "Test Sequra Page2",
-				Email:   "test.sequra.page2@sequra.es",
-				IsAdmin: false,
-			},
-		},
-	}
-	expectedBody, _ := json.Marshal(expectedHoneybadgerResponse)
-	expectedErrorResponse := errors.New("User not found")
-	gock.New(honeybadgerAPIHost).
-		Get(urlPath).
-		Reply(http.StatusOK).
-		JSON(expectedBody)
-
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.FindUserByID(999)
-
-	assert.Equal(HoneybadgerUser{}, actualHoneybadgerResponse, "Actual response is different from expected response")
-	assert.Equal(errResponse, expectedErrorResponse, "Reponse error does not match")
-}
-
-func TestFindUserByEmail(t *testing.T) {
-	defer gock.Off()
-	assert := assert.New(t)
-	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", honeybadgerTeamID)
-
-	expectedHoneybadgerResponse := HoneybadgerUsers{
-		Users: []HoneybadgerUser{
-			{
-				ID:      10,
-				Name:    "Test Sequra Page2",
-				Email:   "test.sequra.page2@sequra.es",
-				IsAdmin: false,
-			},
-		},
-	}
-	expectedBody, _ := json.Marshal(expectedHoneybadgerResponse)
-	gock.New(honeybadgerAPIHost).
-		Get(urlPath).
-		Reply(http.StatusOK).
-		JSON(expectedBody)
-
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.FindUserByEmail("test.sequra.page2@sequra.es")
-
-	assert.Equal(expectedHoneybadgerResponse.Users[0], actualHoneybadgerResponse, "Actual response is different from expected response")
-	assert.Equal(errResponse, nil, "Reponse error must be nil")
-}
-
-func TestFindUserByEmailNotFound(t *testing.T) {
-	defer gock.Off()
-	assert := assert.New(t)
-	urlPath := fmt.Sprintf("/v2/teams/%d/team_members", honeybadgerTeamID)
-
-	expectedHoneybadgerResponse := HoneybadgerUsers{
-		Users: []HoneybadgerUser{
-			{
-				ID:      10,
-				Name:    "Test Sequra Page2",
-				Email:   "test.sequra.page2@sequra.es",
-				IsAdmin: false,
-			},
-		},
-	}
-	expectedBody, _ := json.Marshal(expectedHoneybadgerResponse)
-	expectedErrorResponse := errors.New("User not found")
-	gock.New(honeybadgerAPIHost).
-		Get(urlPath).
-		Reply(http.StatusOK).
-		JSON(expectedBody)
-
-	actualHoneybadgerResponse, errResponse := honeybadgerCli.FindUserByEmail("notfound@sequra.es")
-
-	assert.Equal(HoneybadgerUser{}, actualHoneybadgerResponse, "Actual response is different from expected response")
-	assert.Equal(errResponse, expectedErrorResponse, "Reponse error does not match")
 }
 
 func TestCreateUser(t *testing.T) {
@@ -248,7 +138,7 @@ func TestCreateUser(t *testing.T) {
 		Reply(http.StatusCreated).
 		JSON(expectedBody)
 
-	errResponse := honeybadgerCli.CreateUser("new.user@sequra.es")
+	errResponse := honeybadgerCli.CreateUser("new.user@sequra.es", false, honeybadgerTeamID)
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }
@@ -263,10 +153,10 @@ func TestUpdateUser(t *testing.T) {
 	expectedBody, _ := json.Marshal(nil)
 	gock.New(honeybadgerAPIHost).
 		Put(urlPath).
-		Reply(http.StatusCreated).
+		Reply(http.StatusNoContent).
 		JSON(expectedBody)
 
-	errResponse := honeybadgerCli.UpdateUser(userID, isAdmin)
+	errResponse := honeybadgerCli.UpdateUser(userID, isAdmin, honeybadgerTeamID)
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }
@@ -283,7 +173,53 @@ func TestDeleteUser(t *testing.T) {
 		Reply(http.StatusNoContent).
 		JSON(expectedBody)
 
-	errResponse := honeybadgerCli.DeleteUser(userID)
+	errResponse := honeybadgerCli.DeleteUser(userID, honeybadgerTeamID)
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
+}
+
+func TesGetUserFromTeams(t *testing.T) {
+	defer gock.Off()
+	assert := assert.New(t)
+	userID := 999
+	teamID := 999
+
+	expectedHoneybadgerTeamResponse := HoneybadgerTeams{
+		Teams: []HoneybadgerTeam{
+			{
+				ID:   teamID,
+				Name: "Test Sequra Team",
+				Owner: HoneybadgerTeamOwner{
+					ID:    945,
+					Email: "test.sequra@sequra.es",
+				},
+			},
+		},
+	}
+	expectedBody, _ := json.Marshal(expectedHoneybadgerTeamResponse)
+	gock.New(honeybadgerAPIHost).
+		Get("/v2/teams").
+		Reply(http.StatusOK).
+		JSON(expectedBody)
+
+	expectedHoneybadgerTeamUserResponse := HoneybadgerUsers{
+		Users: []HoneybadgerUser{
+			{
+				ID:      userID,
+				Name:    "Test Sequra Page2",
+				Email:   "test.sequra.page2@sequra.es",
+				IsAdmin: false,
+			},
+		},
+	}
+	expectedBody, _ = json.Marshal(expectedHoneybadgerTeamUserResponse)
+	gock.New(honeybadgerAPIHost).
+		Get(fmt.Sprintf("/v2/teams/%d/team_members", teamID)).
+		Reply(http.StatusNoContent).
+		JSON(expectedBody)
+
+	actualHoneybadgerResponse, actualErrResponse := honeybadgerCli.GetUserFromTeams("test.sequra.page2@sequra.es")
+
+	assert.Equal(expectedHoneybadgerTeamUserResponse, actualHoneybadgerResponse, "Actual response is different from expected response")
+	assert.Equal(actualErrResponse, nil, "Reponse error does not match")
 }

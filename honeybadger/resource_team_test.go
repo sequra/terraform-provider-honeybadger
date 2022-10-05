@@ -11,62 +11,55 @@ import (
 	hbc "terraform-provider-honeybadger/cli"
 )
 
-func TestAccHoneybadgerUserBasic(t *testing.T) {
-	email := "test.sequra@sequra.es"
-	isAdmin := true
-	teamID := 1234
+func TestAccHoneybadgerTeamBasic(t *testing.T) {
+	teamName := "Test Team"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckHoneybadgerUserDestroy,
+		CheckDestroy: testAccCheckHoneybadgerTeamDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckHoneybadgerUserConfigBasic(email, isAdmin, teamID),
+				Config: testAccCheckHoneybadgerTeamConfigBasic(teamName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckHoneybadgerUserExists("honeybadger_user.test"),
+					testAccCheckHoneybadgerTeamExists("honeybadger_team.test"),
 				),
 			},
 		},
 	})
 }
-func testAccCheckHoneybadgerUserConfigBasic(email string, isAdmin bool, teamID int) string {
+func testAccCheckHoneybadgerTeamConfigBasic(teamName string) string {
 	return fmt.Sprintf(`
-	resource "honeybadger_user" "test" {
-		email = %s
-		admin = %t
- 		team_id = [%d]
+	resource "honeybadger_team" "test" {
+		name = %s
 	}
-	`, email, isAdmin, teamID)
+	`, teamName)
 }
 
-func testAccCheckHoneybadgerUserDestroy(s *terraform.State) error {
+func testAccCheckHoneybadgerTeamDestroy(s *terraform.State) error {
 	c := testAccProvider.Meta().(*hbc.HoneybadgerClient)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "honeybadger_user" {
+		if rs.Type != "honeybadger_team" {
 			continue
 		}
 
 		userID := rs.Primary.ID
-		teams := rs.Primary.Attributes["team_id"]
 
-		useridToString, err := strconv.Atoi(userID)
+		teamIDToString, err := strconv.Atoi(userID)
 		if err != nil {
 			return err
 		}
-		for _, team := range teams {
-			err = c.DeleteUser(useridToString, int(team))
-			if err != nil {
-				return err
-			}
+		err = c.DeleteTeam(teamIDToString)
+		if err != nil {
+			return err
 		}
 	}
 
 	return nil
 }
 
-func testAccCheckHoneybadgerUserExists(n string) resource.TestCheckFunc {
+func testAccCheckHoneybadgerTeamExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 
