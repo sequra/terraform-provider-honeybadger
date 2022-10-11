@@ -17,8 +17,8 @@ You can also just specify it like this in your project
 terraform {
   required_providers {
     honeybadger = {
-      version = "~> 1.0.0"
-      source  = "sequra.com/providers/honeybadger"
+      source = "sequra/honeybadger"
+      version = "1.0.1"
     }
   }
 }
