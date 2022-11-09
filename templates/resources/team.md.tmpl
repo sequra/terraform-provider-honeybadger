@@ -1,14 +1,14 @@
 
 ---
 layout: ""
-page_title: "HoneyBadger: honeybadger_team"
+page_title: "Honeybadger: honeybadger_team"
 description: |-
-  Creates and manages teams within your HoneyBadger organization
+  Creates and manages teams within your Honeybadger organization
 ---
 
 # honeybadger_user
 
-This resource allows you to create and manage teams within your HoneyBadger organization.
+This resource allows you to create and manage teams within your Honeybadger organization.
 
 
 ## Example Usage

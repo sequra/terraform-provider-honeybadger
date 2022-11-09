@@ -1,14 +1,14 @@
 
 ---
 layout: ""
-page_title: "HoneyBadger: honeybadger_user"
+page_title: "Honeybadger: honeybadger_user"
 description: |-
-  Creates and manages users within HoneyBadger organizations
+  Creates and manages users within Honeybadger organizations
 ---
 
 # honeybadger_user
 
-This resource allows you to create and manage users within your HoneyBadger organization.
+This resource allows you to create and manage users within your Honeybadger organization.
 
 
 ## Example Usage
