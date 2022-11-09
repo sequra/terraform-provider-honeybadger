@@ -6,7 +6,7 @@ description: |-
   Creates and manages teams within your Honeybadger organization
 ---
 
-# honeybadger_user
+# honeybadger_team (Resource)
 
 This resource allows you to create and manage teams within your Honeybadger organization.
 

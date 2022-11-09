@@ -3,10 +3,10 @@
 layout: ""
 page_title: "Honeybadger: honeybadger_user"
 description: |-
-  Creates and manages users within Honeybadger organizations
+  Creates and manages users within your Honeybadger organization
 ---
 
-# honeybadger_user
+# honeybadger_user (Resource)
 
 This resource allows you to create and manage users within your Honeybadger organization.
 
