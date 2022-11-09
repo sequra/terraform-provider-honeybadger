@@ -1,0 +1,27 @@
+
+---
+layout: ""
+page_title: "HoneyBadger: honeybadger_user"
+description: |-
+  Creates and manages users withi your HoneyBadger organization
+---
+
+# honeybadger_user
+
+This resource allows you to create and manage users within your HoneyBadger organization.
+
+
+## Example Usage
+
+{{tffile "examples/resources/user.tf"}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+
+# Import
+
+Repositories can be imported using the email, e.g.
+
+```
+$ terraform import honeybadger_user.terraform exampleuser@sequra.es
+```
