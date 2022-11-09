@@ -32,3 +32,4 @@ provider "honeybadger" {
 
 - `api_key` (String)
 - `host` (String)
+
