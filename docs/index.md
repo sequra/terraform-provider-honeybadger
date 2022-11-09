@@ -32,3 +32,11 @@ provider "honeybadger" {
 
 - `api_key` (String)
 - `host` (String)
+
+# Import
+
+Repositories can be imported using the email, e.g.
+
+```
+$ terraform import honeybadger_user.terraform exampleuser@sequra.es
+```
