@@ -106,6 +106,8 @@ func (hbc *HoneybadgerClient) DeleteUser(userID int, teamID int) error {
 
 // GetUserFromTeams - Get User information from Teams
 func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []HoneybadgerUser, err error) {
+	insertedUser := make(map[string]bool)
+
 	teams, err := hbc.GetTeams()
 	if err != nil {
 		return userTeams, err
@@ -118,7 +120,29 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 			}
 			user.TeamID = team.ID
 			userTeams = append(userTeams, user)
+			insertedUser[userEmail] = true
 		}
+
+		// Check if the user is invited but its not already in member list
+		if _, ok := insertedUser[userEmail]; !ok {
+			for _, userInvitation := range team.Invitations {
+				if userInvitation.Email != userEmail {
+					continue
+				}
+				userTeams = append(
+					userTeams,
+					HoneybadgerUser{
+						ID:        userInvitation.ID,
+						Email:     userInvitation.Email,
+						IsAdmin:   userInvitation.IsAdmin,
+						TeamID:    team.ID,
+						CreatedAt: userInvitation.CreatedAt,
+					},
+				)
+
+			}
+		}
+
 	}
 
 	return userTeams, nil
