@@ -115,34 +115,30 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 
 	for _, team := range teams {
 		for _, user := range team.Users {
-			if user.Email != userEmail {
-				continue
+			if user.Email == userEmail {
+				user.TeamID = team.ID
+				userTeams = append(userTeams, user)
+				insertedUser[userEmail] = true
 			}
-			user.TeamID = team.ID
-			userTeams = append(userTeams, user)
-			insertedUser[userEmail] = true
 		}
 
 		// Check if the user is invited but its not already in member list
 		if _, ok := insertedUser[userEmail]; !ok {
 			for _, userInvitation := range team.Invitations {
-				if userInvitation.Email != userEmail {
-					continue
+				if userInvitation.Email == userEmail {
+					userTeams = append(
+						userTeams,
+						HoneybadgerUser{
+							ID:        userInvitation.ID,
+							Email:     userInvitation.Email,
+							IsAdmin:   userInvitation.IsAdmin,
+							TeamID:    team.ID,
+							CreatedAt: userInvitation.CreatedAt,
+						},
+					)
 				}
-				userTeams = append(
-					userTeams,
-					HoneybadgerUser{
-						ID:        userInvitation.ID,
-						Email:     userInvitation.Email,
-						IsAdmin:   userInvitation.IsAdmin,
-						TeamID:    team.ID,
-						CreatedAt: userInvitation.CreatedAt,
-					},
-				)
-
 			}
 		}
-
 	}
 
 	return userTeams, nil
