@@ -104,7 +104,7 @@ func (hbc *HoneybadgerClient) DeleteUser(userID int, teamID int) error {
 	return nil
 }
 
-// GetUserFromTeams - Get User information from Teams
+// GetUserFromTeams - Get Users information from Teams
 func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []HoneybadgerUser, err error) {
 	insertedUser := make(map[string]bool)
 
@@ -114,6 +114,7 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 	}
 
 	for _, team := range teams {
+		delete(insertedUser, userEmail)
 		for _, user := range team.Users {
 			if user.Email == userEmail {
 				user.TeamID = team.ID
@@ -144,7 +145,7 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 	return userTeams, nil
 }
 
-// GetUserFromTeams - Get User information from Teams
+// GetUserForTeam - Get User information from specific Team
 func (hbc *HoneybadgerClient) GetUserForTeam(userEmail string, teamID int) (HoneybadgerUser, error) {
 	userTeams, err := hbc.GetUserFromTeams(userEmail)
 	if err != nil {

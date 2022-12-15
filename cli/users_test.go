@@ -178,13 +178,144 @@ func TestDeleteUser(t *testing.T) {
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }
 
-func TesGetUserFromTeams(t *testing.T) {
+func TestGetUserFromTeamsWithPendingInvitations(t *testing.T) {
+	defer gock.Off()
+	assert := assert.New(t)
+	userID := 991
+
+	mockTeamResponse := HoneybadgerTeams{
+		Teams: []HoneybadgerTeam{
+			{
+				ID:   991,
+				Name: "Test Sequra Team",
+				Owner: HoneybadgerTeamOwner{
+					ID:    945,
+					Email: "test.sequra@sequra.es",
+				},
+				Users: []HoneybadgerUser{
+					{
+						ID:      userID,
+						Email:   "test.sequra.page2@sequra.es",
+						IsAdmin: false,
+					},
+				},
+				Invitations: []HoneybadgerInvitation{
+					{
+						ID:      userID,
+						Token:   "invented-token",
+						Email:   "test.sequra.invitation@sequra.es",
+						IsAdmin: false,
+					},
+				},
+			},
+			{
+				ID:   992,
+				Name: "Test Sequra Team",
+				Owner: HoneybadgerTeamOwner{
+					ID:    945,
+					Email: "test.sequra@sequra.es",
+				},
+				Users: []HoneybadgerUser{
+					{
+						ID:      userID,
+						Email:   "test.sequra.page2@sequra.es",
+						IsAdmin: false,
+					},
+				},
+				Invitations: []HoneybadgerInvitation{
+					{
+						ID:      userID,
+						Token:   "invented-token",
+						Email:   "test.sequra.invitation@sequra.es",
+						IsAdmin: false,
+					},
+				},
+			},
+			{
+				ID:   993,
+				Name: "Test Sequra Team",
+				Owner: HoneybadgerTeamOwner{
+					ID:    945,
+					Email: "test.sequra@sequra.es",
+				},
+				Invitations: []HoneybadgerInvitation{
+					{
+						ID:      userID,
+						Token:   "invented-token",
+						Email:   "test.sequra.page2@sequra.es",
+						IsAdmin: false,
+					},
+				},
+			},
+		},
+	}
+	expectedBody, _ := json.Marshal(mockTeamResponse)
+
+	expectedResponses := []struct {
+		response []HoneybadgerUser
+		email    string
+	}{
+		{
+			email: "test.sequra.page2@sequra.es",
+			response: []HoneybadgerUser{
+				{
+					ID:      userID,
+					Email:   "test.sequra.page2@sequra.es",
+					IsAdmin: false,
+					TeamID:  991,
+				},
+				{
+					ID:      userID,
+					Email:   "test.sequra.page2@sequra.es",
+					IsAdmin: false,
+					TeamID:  992,
+				},
+				{
+					ID:      userID,
+					Email:   "test.sequra.page2@sequra.es",
+					IsAdmin: false,
+					TeamID:  993,
+				},
+			},
+		},
+		{
+			email: "test.sequra.invitation@sequra.es",
+			response: []HoneybadgerUser{
+				{
+					ID:      userID,
+					Email:   "test.sequra.invitation@sequra.es",
+					IsAdmin: false,
+					TeamID:  991,
+				},
+				{
+					ID:      userID,
+					Email:   "test.sequra.invitation@sequra.es",
+					IsAdmin: false,
+					TeamID:  992,
+				},
+			},
+		},
+	}
+
+	for _, expectedResponse := range expectedResponses {
+		gock.New(honeybadgerAPIHost).
+			Get("/v2/teams").
+			Reply(http.StatusOK).
+			JSON(expectedBody)
+
+		actualResponse, actualErrResponse := honeybadgerCli.GetUserFromTeams(expectedResponse.email)
+		assert.Equal(expectedResponse.response, actualResponse, "Actual response is different from expected response")
+		assert.Equal(actualErrResponse, nil, "Reponse error does not match")
+	}
+}
+
+func TestGetUserForTeam(t *testing.T) {
 	defer gock.Off()
 	assert := assert.New(t)
 	userID := 999
 	teamID := 999
 
-	expectedHoneybadgerTeamResponse := HoneybadgerTeams{
+	expectedHoneyResponse := HoneybadgerTeams{
 		Teams: []HoneybadgerTeam{
 			{
 				ID:   teamID,
@@ -193,33 +324,33 @@ func TesGetUserFromTeams(t *testing.T) {
 					ID:    945,
 					Email: "test.sequra@sequra.es",
 				},
+				Users: []HoneybadgerUser{
+					{
+						ID:      userID,
+						Name:    "Test Sequra Page2",
+						Email:   "test.sequra.page2@sequra.es",
+						IsAdmin: false,
+					},
+				},
 			},
 		},
 	}
-	expectedBody, _ := json.Marshal(expectedHoneybadgerTeamResponse)
+	expectedBody, _ := json.Marshal(expectedHoneyResponse)
 	gock.New(honeybadgerAPIHost).
 		Get("/v2/teams").
 		Reply(http.StatusOK).
 		JSON(expectedBody)
 
-	expectedHoneybadgerTeamUserResponse := HoneybadgerUsers{
-		Users: []HoneybadgerUser{
-			{
-				ID:      userID,
-				Name:    "Test Sequra Page2",
-				Email:   "test.sequra.page2@sequra.es",
-				IsAdmin: false,
-			},
-		},
+	expectedHoneybadgerTeamUserResponse := HoneybadgerUser{
+		ID:      userID,
+		Name:    "Test Sequra Page2",
+		Email:   "test.sequra.page2@sequra.es",
+		IsAdmin: false,
+		TeamID:  teamID,
 	}
-	expectedBody, _ = json.Marshal(expectedHoneybadgerTeamUserResponse)
-	gock.New(honeybadgerAPIHost).
-		Get(fmt.Sprintf("/v2/teams/%d/team_members", teamID)).
-		Reply(http.StatusNoContent).
-		JSON(expectedBody)
 
-	actualHoneybadgerResponse, actualErrResponse := honeybadgerCli.GetUserFromTeams("test.sequra.page2@sequra.es")
+	actualResponse, actualErrResponse := honeybadgerCli.GetUserForTeam("test.sequra.page2@sequra.es", teamID)
 
-	assert.Equal(expectedHoneybadgerTeamUserResponse, actualHoneybadgerResponse, "Actual response is different from expected response")
+	assert.Equal(expectedHoneybadgerTeamUserResponse, actualResponse, "Actual response is different from expected response")
 	assert.Equal(actualErrResponse, nil, "Reponse error does not match")
 }
