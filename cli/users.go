@@ -106,7 +106,7 @@ func (hbc *HoneybadgerClient) DeleteUser(userID int, teamID int) error {
 
 // GetUserFromTeams - Get Users information from Teams
 func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []HoneybadgerUser, err error) {
-	insertedUser := make(map[string]bool)
+	var insertedUser bool
 
 	teams, err := hbc.GetTeams()
 	if err != nil {
@@ -114,17 +114,17 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 	}
 
 	for _, team := range teams {
-		delete(insertedUser, userEmail) // Ensure that It is only valid fro the current team
+		insertedUser = false
 		for _, user := range team.Users {
 			if user.Email == userEmail {
 				user.TeamID = team.ID
 				userTeams = append(userTeams, user)
-				insertedUser[userEmail] = true
+				insertedUser = true
 			}
 		}
 
 		// Check if the user has a pending invitation. However, the user iss not already in member list
-		if _, ok := insertedUser[userEmail]; !ok {
+		if !insertedUser {
 			for _, userInvitation := range team.Invitations {
 				if userInvitation.Email == userEmail {
 					userTeams = append(
