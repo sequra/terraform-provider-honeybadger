@@ -114,7 +114,7 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 	}
 
 	for _, team := range teams {
-		delete(insertedUser, userEmail)
+		delete(insertedUser, userEmail) // Ensure that It is only valid fro the current team
 		for _, user := range team.Users {
 			if user.Email == userEmail {
 				user.TeamID = team.ID
@@ -123,7 +123,7 @@ func (hbc *HoneybadgerClient) GetUserFromTeams(userEmail string) (userTeams []Ho
 			}
 		}
 
-		// Check if the user is invited but its not already in member list
+		// Check if the user has a pending invitation. However, the user iss not already in member list
 		if _, ok := insertedUser[userEmail]; !ok {
 			for _, userInvitation := range team.Invitations {
 				if userInvitation.Email == userEmail {
