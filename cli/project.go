@@ -62,9 +62,13 @@ func (hbc *HoneybadgerClient) FindProjectByID(projectID int) (HoneybadgerProject
 }
 
 // CreateProject - Create Project
-func (hbc *HoneybadgerClient) CreateProject(projectName string) (HoneybadgerProject, error) {
+func (hbc *HoneybadgerClient) CreateProject(projectName string, language string) (HoneybadgerProject, error) {
 	var hbProject HoneybadgerProject
 	var jsonPayload = []byte(`{"project":{"name":"` + projectName + `"}}`)
+
+	if len(language) > 0 {
+		jsonPayload = []byte(`{"project":{"name":"` + projectName + `", "language": "` + language + `"}}`)
+	}
 
 	url := fmt.Sprintf("%s/v2/projects", hbc.HostURL)
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonPayload))
@@ -86,8 +90,12 @@ func (hbc *HoneybadgerClient) CreateProject(projectName string) (HoneybadgerProj
 }
 
 // UpdateProject - Update Project
-func (hbc *HoneybadgerClient) UpdateProject(projectName string, projectID int) error {
+func (hbc *HoneybadgerClient) UpdateProject(projectName string, projectID int, language string) error {
 	var jsonPayload = []byte(`{"project":{"name":"` + projectName + `"}}`)
+
+	if len(language) > 0 {
+		jsonPayload = []byte(`{"project":{"name":"` + projectName + `", "language": "` + language + `"}}`)
+	}
 
 	url := fmt.Sprintf("%s/v2/projects/%d", hbc.HostURL, projectID)
 	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonPayload))

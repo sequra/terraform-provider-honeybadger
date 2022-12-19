@@ -172,7 +172,7 @@ func TestCreateProject(t *testing.T) {
 		Reply(http.StatusCreated).
 		JSON(expectedBody)
 
-	_, errResponse := honeybadgerCli.CreateProject("New Project")
+	_, errResponse := honeybadgerCli.CreateProject("New Project", "ruby")
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }
@@ -189,7 +189,7 @@ func TestUpdateProject(t *testing.T) {
 		Reply(http.StatusCreated).
 		JSON(expectedBody)
 
-	errResponse := honeybadgerCli.UpdateProject("New Project", projectID)
+	errResponse := honeybadgerCli.UpdateProject("New Project", projectID, "ruby")
 
 	assert.Equal(errResponse, nil, "Reponse error must be nil")
 }

@@ -46,7 +46,8 @@ func resourceProjectCreate(ctx context.Context, d *schema.ResourceData, m interf
 	var diags diag.Diagnostics
 
 	projectName := d.Get("name").(string)
-	hbProject, err := c.CreateProject(projectName)
+	language := d.Get("language").(string)
+	hbProject, err := c.CreateProject(projectName, language)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -67,6 +68,7 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	projectID, _ := strconv.Atoi(d.Id())
 	projectName := d.Get("name").(string)
+	language := d.Get("language").(string)
 	if projectID == 0 {
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
@@ -78,7 +80,7 @@ func resourceProjectUpdate(ctx context.Context, d *schema.ResourceData, m interf
 
 	if d.HasChange("name") {
 		projectName := d.Get("name").(string)
-		err := c.UpdateProject(projectName, projectID)
+		err := c.UpdateProject(projectName, projectID, language)
 		if err != nil {
 			return diag.FromErr(err)
 		}
