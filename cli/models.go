@@ -35,13 +35,21 @@ type HoneybadgerTeam struct {
 	Owner       HoneybadgerTeamOwner    `json:"owner"`
 }
 
+type HoneybadgerProjects struct {
+	Projects []HoneybadgerProject `json:"results"`
+	Links    HoneybadgerLink      `json:"links"`
+}
+
 type HoneybadgerProject struct {
-	ID                 int      `json:"id"`
-	Name               string   `json:"name"`
-	CreatedAt          string   `json:"created_at"`
-	DisablePublicLinks bool     `json:"disable_public_links"`
-	Token              string   `json:"token"`
-	Environments       []string `json:"environments"`
+	ID                   int      `json:"id"`
+	Name                 string   `json:"name"`
+	CreatedAt            string   `json:"created_at"`
+	DisablePublicLinks   bool     `json:"disable_public_links"`
+	Token                string   `json:"token"`
+	Environments         []string `json:"environments"`
+	IsActive             bool     `json:"active"`
+	PurgeDays            int      `json:"purge_days"`
+	ResolveErorsOnDeploy bool     `json:"resolve_errors_on_deploy"`
 }
 
 type HoneybadgerInvitation struct {

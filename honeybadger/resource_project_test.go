@@ -11,46 +11,46 @@ import (
 	hbc "terraform-provider-honeybadger/cli"
 )
 
-func TestAccHoneybadgerTeamBasic(t *testing.T) {
-	teamName := "Test Team"
+func TestAccHoneybadgerProjectBasic(t *testing.T) {
+	projectName := "New Project"
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: testAccCheckHoneybadgerTeamDestroy,
+		CheckDestroy: testAccCheckHoneybadgerProjectDestroy,
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCheckHoneybadgerTeamConfigBasic(teamName),
+				Config: testAccCheckHoneybadgerProjectConfigBasic(projectName),
 				Check: resource.ComposeTestCheckFunc(
-					testAccCheckHoneybadgerTeamExists("honeybadger_team.test"),
+					testAccCheckHoneybadgerProjectExists("honeybadger_project.test"),
 				),
 			},
 		},
 	})
 }
-func testAccCheckHoneybadgerTeamConfigBasic(teamName string) string {
+func testAccCheckHoneybadgerProjectConfigBasic(projectName string) string {
 	return fmt.Sprintf(`
-	resource "honeybadger_team" "test" {
+	resource "honeybadger_project" "test" {
 		name = %s
 	}
-	`, teamName)
+	`, projectName)
 }
 
-func testAccCheckHoneybadgerTeamDestroy(s *terraform.State) error {
+func testAccCheckHoneybadgerProjectDestroy(s *terraform.State) error {
 	c := testAccProvider.Meta().(*hbc.HoneybadgerClient)
 
 	for _, rs := range s.RootModule().Resources {
-		if rs.Type != "honeybadger_team" {
+		if rs.Type != "honeybadger_project" {
 			continue
 		}
 
-		teamID := rs.Primary.ID
+		projectID := rs.Primary.ID
 
-		teamIDToString, err := strconv.Atoi(teamID)
+		projectIDToString, err := strconv.Atoi(projectID)
 		if err != nil {
 			return err
 		}
-		err = c.DeleteTeam(teamIDToString)
+		err = c.DeleteTeam(projectIDToString)
 		if err != nil {
 			return err
 		}
@@ -59,7 +59,7 @@ func testAccCheckHoneybadgerTeamDestroy(s *terraform.State) error {
 	return nil
 }
 
-func testAccCheckHoneybadgerTeamExists(n string) resource.TestCheckFunc {
+func testAccCheckHoneybadgerProjectExists(n string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
 		rs, ok := s.RootModule().Resources[n]
 
@@ -68,7 +68,7 @@ func testAccCheckHoneybadgerTeamExists(n string) resource.TestCheckFunc {
 		}
 
 		if rs.Primary.ID == "" {
-			return fmt.Errorf("No TeamID set")
+			return fmt.Errorf("No projectID set")
 		}
 
 		return nil

@@ -27,8 +27,9 @@ func Provider() *schema.Provider {
 			"honeybadger_teams": dataSourceTeams(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"honeybadger_user": resourceUser(),
-			"honeybadger_team": resourceTeam(),
+			"honeybadger_user":    resourceUser(),
+			"honeybadger_team":    resourceTeam(),
+			"honeybadger_project": resourceProject(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

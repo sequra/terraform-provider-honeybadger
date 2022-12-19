@@ -114,7 +114,7 @@ func TestFindTeamByNameNotFound(t *testing.T) {
 	actualHoneybadgerResponse, errResponse := honeybadgerCli.FindTeamByName("Test Team Not Found")
 
 	assert.Equal(HoneybadgerTeam{}, actualHoneybadgerResponse, "Actual response is different from expected response")
-	assert.Equal(errResponse, expectedErrorResponse, "Reponse error must be nil")
+	assert.Equal(errResponse, expectedErrorResponse, "Reponse error is different from expected")
 }
 
 func TestFindTeamByID(t *testing.T) {
