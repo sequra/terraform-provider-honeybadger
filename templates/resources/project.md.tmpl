@@ -1,0 +1,27 @@
+
+---
+layout: ""
+page_title: "Honeybadger: honeybadger_project"
+description: |-
+  Creates and manages projects within your Honeybadger organization
+---
+
+# honeybadger_team (Resource)
+
+This resource allows you to create and manage projects within your Honeybadger organization.
+
+
+## Example Usage
+
+{{tffile "examples/resources/project.tf"}}
+
+{{ .SchemaMarkdown | trimspace }}
+
+
+# Import
+
+Repositories can be imported using the project id, e.g.
+
+```
+$ terraform import honeybadger_project.new_team 1234
+```
